@@ -5,11 +5,11 @@ plugins {
 
 android {
     namespace = "com.bof.android.singingroom"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.bof.android.singingroom"
-        minSdk = 24
+        minSdk = 27
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -50,7 +50,8 @@ android {
 }
 
 dependencies {
-
+    // audio player
+    implementation(project(":audio_player"))
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.activity:activity-compose:1.7.2")

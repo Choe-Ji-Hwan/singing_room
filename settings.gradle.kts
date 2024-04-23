@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "SingingRoom"
 include(":app")
- 
+include(":audio_player")
