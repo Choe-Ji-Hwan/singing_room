@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.bof.android.singingroom"
-        minSdk = 27
+        minSdk = 29
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -50,8 +50,15 @@ android {
 }
 
 dependencies {
-    // audio player
+    // ---------------- custom dependencies -----------------
+    // audio player.
     implementation(project(":audio_player"))
+
+    // navigation.
+    val nav_version = "2.7.7"
+    implementation("androidx.navigation:navigation-compose:$nav_version")
+
+    // ---------------- default dependencies -----------------
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.activity:activity-compose:1.7.2")
