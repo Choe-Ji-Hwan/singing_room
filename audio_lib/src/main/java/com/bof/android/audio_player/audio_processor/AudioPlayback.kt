@@ -3,7 +3,7 @@ package com.bof.android.audio_player.audio_processor
 import android.media.AudioRecord
 import com.bof.android.audio_player.audio_component.AudioPlayer
 import com.bof.android.audio_player.audio_component.AudioRecorder
-import com.bof.android.audio_player.audio_component.AudioTrackPlayer
+import com.bof.android.audio_player.audio_component.LawLatencyAudioPlayer
 
 /**
  * 오디오를 입력받고, 그대로 출력한다.
@@ -35,7 +35,7 @@ class AudioPlayback {
             it.prepare(AUDIO_TYPE, SAMPLE_RATE, CHANNEL_CNT)
         }
         // player 준비.
-        audioPlayer = AudioTrackPlayer().also {
+        audioPlayer = LawLatencyAudioPlayer().also {
             it.prepare(SAMPLE_RATE, CHANNEL_CNT)
         }
     }

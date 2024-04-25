@@ -13,7 +13,7 @@ Java_com_bof_android_audio_1player_audio_1component_LawLatencyAudioPlayer_consum
         JNIEnv *env,
         jobject thiz,
         jlong playerId,
-        jshortArray byteArray,
+        jshortArray shortArray,
         jint chunkSize
 );
 

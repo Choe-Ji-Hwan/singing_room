@@ -14,7 +14,7 @@ class LawLatencyAudioPlayer: AudioPlayer {
 
     companion object {
         init {
-            System.loadLibrary("oboejni")
+            System.loadLibrary("main")
         }
     }
 

@@ -1,4 +1,5 @@
 #include "oboejni.h"
+#include "../audio_processor/OboeAudioPlayer.h"
 #include <iostream>
 
 extern "C" JNIEXPORT jlong JNICALL
@@ -8,7 +9,9 @@ Java_com_bof_android_audio_1player_audio_1component_LawLatencyAudioPlayer_prepar
         int sampleRate,
         int channelCnt
 ) {
-    printf("test.");
+    auto* player = new OboeAudioPlayer(sampleRate, channelCnt);
+    player->prepare();
+    return reinterpret_cast<jlong>(player);
 }
 
 
@@ -17,10 +20,17 @@ Java_com_bof_android_audio_1player_audio_1component_LawLatencyAudioPlayer_consum
         JNIEnv *env,
         jobject thiz,
         jlong playerId,
-        jshortArray byteArray,
+        jshortArray shortArray,
         jint chunkSize
 ) {
-    printf("test.");
+    auto* player = reinterpret_cast<OboeAudioPlayer*>(playerId);
+
+    auto* dataArray = new short[chunkSize];
+    env->GetShortArrayRegion(shortArray, 0, chunkSize, dataArray);
+    // 전달.
+    player->consumeData(dataArray, chunkSize);
+    // 전달 역할을 다 했으니 해제.
+    delete[] dataArray;
 }
 
 extern "C" JNIEXPORT void JNICALL
@@ -29,5 +39,7 @@ Java_com_bof_android_audio_1player_audio_1component_LawLatencyAudioPlayer_finish
         jobject thiz,
         jlong playerId
 ) {
-    printf("test.");
+    auto* player = reinterpret_cast<OboeAudioPlayer*>(playerId);
+    player->finish();
+    delete player;
 }
