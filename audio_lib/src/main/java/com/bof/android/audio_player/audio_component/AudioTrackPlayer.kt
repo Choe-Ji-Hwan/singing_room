@@ -53,8 +53,8 @@ class AudioTrackPlayer: AudioPlayer {
     /**
      * PCM 데이터를 받아서, 재생.
      */
-    override fun consumeData(shortArray: ByteArray, chunkSize: Int) {
-        player?.write(shortArray, 0, chunkSize)
+    override fun consumeData(byteArray: ByteArray, chunkSize: Int) {
+        player?.write(byteArray, 0, chunkSize)
     }
 
     /**

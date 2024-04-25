@@ -1,4 +1,4 @@
-package com.bof.android.audio_player.audio_proccessor
+package com.bof.android.audio_player.audio_processor
 
 import android.media.AudioRecord
 import com.bof.android.audio_player.audio_component.AudioPlayer

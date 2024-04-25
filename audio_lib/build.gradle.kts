@@ -12,6 +12,16 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+        externalNativeBuild {
+            cmake {
+                cppFlags += ""
+                arguments("-DANDROID_STL=c++_shared")
+            }
+        }
+    }
+
+    buildFeatures {
+        prefab = true
     }
 
     buildTypes {
@@ -30,9 +40,17 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+            version = "3.22.1"
+        }
+    }
 }
 
 dependencies {
+    // Oboe lib
+    implementation("com.google.oboe:oboe:1.8.1")
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")

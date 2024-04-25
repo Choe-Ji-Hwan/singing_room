@@ -15,7 +15,7 @@ interface AudioPlayer {
     /**
      * PCM 데이터를 받아서, 재생.
      */
-    fun consumeData(shortArray: ByteArray, chunkSize: Int)
+    fun consumeData(byteArray: ByteArray, chunkSize: Int)
 
     /**
      * 종료.

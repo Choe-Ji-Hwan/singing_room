@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
-import com.bof.android.audio_player.audio_proccessor.AudioPlayback
+import com.bof.android.audio_player.audio_processor.AudioPlayback
 
 class HomeViewModel : ViewModel() {
     companion object {
