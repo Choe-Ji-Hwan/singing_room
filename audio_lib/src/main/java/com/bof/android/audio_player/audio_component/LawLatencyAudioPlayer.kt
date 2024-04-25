@@ -23,20 +23,20 @@ class LawLatencyAudioPlayer: AudioPlayer {
     }
 
     override fun consumeData(byteArray: ByteArray, chunkSize: Int) {
-        if (playerId == null) return
+/*        if (playerId == null) return
 
         // byteArray to shortArray
         val pcmShortArray = byteArray.toShortArray()
         // apply re-size
         val convertedSize = pcmShortArray.size
-        consumeDataNative(playerId!!, pcmShortArray, convertedSize)
+        consumeDataNative(playerId!!, pcmShortArray, convertedSize)*/
     }
 
     override fun finish() {
-        if (playerId == null) return
+/*        if (playerId == null) return
 
         finishNative(playerId!!)
-        playerId = null
+        playerId = null*/
     }
 
     private external fun prepareNative(sampleRate: Int, channelCnt: Int): Long

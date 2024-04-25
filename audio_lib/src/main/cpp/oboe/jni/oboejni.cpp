@@ -1,5 +1,6 @@
 #include "oboejni.h"
 #include "../audio_processor/OboeAudioPlayer.h"
+#include "../audio_processor/OboeEngine.h"
 #include <iostream>
 
 extern "C" JNIEXPORT jlong JNICALL
@@ -9,8 +10,11 @@ Java_com_bof_android_audio_1player_audio_1component_LawLatencyAudioPlayer_prepar
         int sampleRate,
         int channelCnt
 ) {
-    auto* player = new OboeAudioPlayer(sampleRate, channelCnt);
+/*    auto* player = new OboeAudioPlayer(sampleRate, channelCnt);
     player->prepare();
+    return reinterpret_cast<jlong>(player);*/
+    auto* player = new OboeEngine();
+    player->startPlaybackAndRecording();
     return reinterpret_cast<jlong>(player);
 }
 

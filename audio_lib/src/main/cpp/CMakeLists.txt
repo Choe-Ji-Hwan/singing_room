@@ -29,6 +29,7 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
     # List C/C++ source files with relative paths to this CMakeLists.txt.
         oboe/jni/oboejni.cpp
         oboe/audio_processor/OboeAudioPlayer.cpp
+        oboe/audio_processor/OboeEngine.cpp
         tools/SynchronizedQueue.cpp)
 
 # Find the Oboe package

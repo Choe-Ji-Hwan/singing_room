@@ -14,7 +14,6 @@ void OboeAudioPlayer::prepare() {
     builder.setSampleRate(sampleRate);
     builder.setPerformanceMode(oboe::PerformanceMode::LowLatency);
 
-
     callback = new StreamCallback(*queue);
     builder.setDataCallback(callback);
 

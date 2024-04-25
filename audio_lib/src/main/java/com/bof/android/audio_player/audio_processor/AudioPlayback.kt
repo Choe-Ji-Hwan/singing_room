@@ -31,9 +31,9 @@ class AudioPlayback {
      */
     fun prepare() {
         // recorder 준비.
-        audioRecorder = AudioRecorder().also {
+/*        audioRecorder = AudioRecorder().also {
             it.prepare(AUDIO_TYPE, SAMPLE_RATE, CHANNEL_CNT)
-        }
+        }*/
         // player 준비.
         audioPlayer = LawLatencyAudioPlayer().also {
             it.prepare(SAMPLE_RATE, CHANNEL_CNT)
@@ -47,9 +47,9 @@ class AudioPlayback {
         if (audioRecorder == null || audioPlayer == null) return
 
         // 레코딩 하면서, 동시에 녹음한 데이터 재생.
-        audioRecorder?.recording(onRecording = { byteArray, size ->
+/*        audioRecorder?.recording(onRecording = { byteArray, size ->
             audioPlayer?.consumeData(byteArray, size)
-        })
+        })*/
     }
 
     /**
