@@ -52,7 +52,7 @@ android {
 dependencies {
     // ---------------- custom dependencies -----------------
     // audio player.
-    implementation(project(":audio_player"))
+    implementation(project(":audio_lib"))
 
     // navigation.
     val nav_version = "2.7.7"

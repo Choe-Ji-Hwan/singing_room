@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
-import com.bof.android.audio_player.audio_component.AudioRecorder
 import com.bof.android.audio_player.audio_proccessor.AudioPlayback
 
 class HomeViewModel : ViewModel() {
