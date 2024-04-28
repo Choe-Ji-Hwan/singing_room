@@ -10,8 +10,10 @@ public:
         playbackBuilder.setDirection(oboe::Direction::Output);
         playbackBuilder.setFormat(oboe::AudioFormat::I16);
         playbackBuilder.setSharingMode(oboe::SharingMode::Exclusive);
-        playbackBuilder.setSampleRate(44100);
+        playbackBuilder.setSampleRateConversionQuality(oboe::SampleRateConversionQuality::Medium);
+        playbackBuilder.setSampleRate(48000);
         playbackBuilder.setChannelCount(1);
+        playbackBuilder.setUsage(oboe::Usage::Game);
         playbackBuilder.setPerformanceMode(oboe::PerformanceMode::LowLatency);
         playbackBuilder.setCallback(this);
         auto result = playbackBuilder.openStream(mPlaybackStream);
@@ -22,8 +24,10 @@ public:
         recordingBuilder.setDirection(oboe::Direction::Input);
         recordingBuilder.setFormat(oboe::AudioFormat::I16);
         recordingBuilder.setSharingMode(oboe::SharingMode::Exclusive);
-        recordingBuilder.setSampleRate(44100);
+        recordingBuilder.setSampleRate(48000);
         recordingBuilder.setChannelCount(1);
+        recordingBuilder.setSampleRateConversionQuality(oboe::SampleRateConversionQuality::Medium);
+        recordingBuilder.setUsage(oboe::Usage::Game);
         recordingBuilder.setPerformanceMode(oboe::PerformanceMode::LowLatency);
         recordingBuilder.setCallback(nullptr); // 레코딩은 콜백 없이 처리
         result = recordingBuilder.openStream(mRecordingStream);
@@ -38,8 +42,10 @@ public:
 
     oboe::DataCallbackResult onAudioReady(oboe::AudioStream *audioStream, void *audioData, int32_t numFrames) override {
         // 레코딩된 오디오 데이터를 출력 스트림으로 전송
+        int16_t* dataStream = static_cast<int16_t *>(audioData);
+
         if (audioStream == mPlaybackStream.get()) {
-            mRecordingStream->read(audioData, numFrames, 0);
+            mRecordingStream->read(dataStream, numFrames, 0);
         }
         return oboe::DataCallbackResult::Continue;
     }
