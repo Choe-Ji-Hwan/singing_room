@@ -41,11 +41,26 @@ public:
     }
 
     oboe::DataCallbackResult onAudioReady(oboe::AudioStream *audioStream, void *audioData, int32_t numFrames) override {
-        // 레코딩된 오디오 데이터를 출력 스트림으로 전송
-        int16_t* dataStream = static_cast<int16_t *>(audioData);
+        int16_t* resultData = new int16_t[numFrames];
+        int16_t* outputData = static_cast<int16_t *>(audioData);
+        mRecordingStream->read(resultData, numFrames, 0);
 
-        if (audioStream == mPlaybackStream.get()) {
-            mRecordingStream->read(dataStream, numFrames, 0);
+        // 이제 resultData에서 읽어왔으니, 여기서 데이터 변환.
+        // -----------------------------------------
+        // resultData 를 가지고 작업하면 됨.
+        //
+        // -----------------------------------------
+        for(int i = 0; i < numFrames; ++i) {
+            resultData[i] *= 2; // 음량 2배.
+            // 만약 오버플로우 발생 시 최대값으로 설정
+            if (resultData[i] > std::numeric_limits<int16_t>::max()) {
+                resultData[i] = std::numeric_limits<int16_t>::max();
+            } else if (resultData[i] < std::numeric_limits<int16_t>::min()) {
+                resultData[i] = std::numeric_limits<int16_t>::min();
+            }
+        }
+        for (int i = 0; i < numFrames; ++i) {
+            outputData[i] = resultData[i];
         }
         return oboe::DataCallbackResult::Continue;
     }
