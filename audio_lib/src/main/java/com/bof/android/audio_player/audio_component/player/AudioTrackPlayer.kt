@@ -1,4 +1,4 @@
-package com.bof.android.audio_player.audio_component
+package com.bof.android.audio_player.audio_component.player
 
 import android.media.AudioAttributes
 import android.media.AudioFormat
@@ -53,8 +53,8 @@ class AudioTrackPlayer: AudioPlayer {
     /**
      * PCM 데이터를 받아서, 재생.
      */
-    override fun consumeData(byteArray: ByteArray, chunkSize: Int) {
-        player?.write(byteArray, 0, chunkSize)
+    override fun consumeData(pcmData: ShortArray, chunkSize: Int) {
+        player?.write(pcmData, 0, chunkSize)
     }
 
     /**

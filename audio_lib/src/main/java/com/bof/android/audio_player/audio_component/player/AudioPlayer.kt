@@ -1,4 +1,4 @@
-package com.bof.android.audio_player.audio_component
+package com.bof.android.audio_player.audio_component.player
 
 /**
  * 오디오 플레이어 기본 제공 인터페이스.
@@ -15,7 +15,7 @@ interface AudioPlayer {
     /**
      * PCM 데이터를 받아서, 재생.
      */
-    fun consumeData(byteArray: ByteArray, chunkSize: Int)
+    fun consumeData(pcmData: ShortArray, chunkSize: Int)
 
     /**
      * 종료.

@@ -21,24 +21,21 @@ void OboeAudioPlayer::prepare() {
     oboe::Result result = builder.openStream(&stream);
     if (result == oboe::Result::OK) {
         stream->requestStart(); // 스트림 시작.
-        this->oboeStream = std::unique_ptr<oboe::AudioStream>(stream);;
+        this->playerStream = std::unique_ptr<oboe::AudioStream>(stream);;
     } else {
         __android_log_print(ANDROID_LOG_ERROR, "OboeAudioPlayer", "prepare failed");
     }
 }
 
 void OboeAudioPlayer::consumeData(short *shortArray, int size) {
-    for(int i = 0; i < size; ++i) {
-        this->queue->enqueue(shortArray[i]);
-    }
+
 }
 
 void OboeAudioPlayer::finish() {
-    oboeStream->stop(); // 스트림 정지.
-    oboeStream->close(); // 스트림 닫기.
-    oboeStream.reset(); // 스트림 객체 해제.
+    playerStream->stop(); // 스트림 정지.
+    playerStream->close(); // 스트림 닫기.
+    playerStream.reset(); // 스트림 객체 해제.
     delete callback;
-    delete queue;
 }
 
 OboeAudioPlayer::StreamCallback::StreamCallback(SynchronizedQueue<short> &queue): targetQueue(queue) {}

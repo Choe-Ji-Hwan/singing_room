@@ -33,11 +33,10 @@ private:
     };
 
 private:
-    SynchronizedQueue<short>* queue = nullptr;
     int sampleRate;
     int channelCnt;
 
-    std::unique_ptr<oboe::AudioStream> oboeStream;
+    std::unique_ptr<oboe::AudioStream> playerStream;
     StreamCallback* callback = nullptr;
 };
 
