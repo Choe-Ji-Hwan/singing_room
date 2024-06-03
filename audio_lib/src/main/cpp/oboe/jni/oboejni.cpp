@@ -1,7 +1,7 @@
 #include "oboejni.h"
 #include "../audio_component/AudioCapture.h"
-#include "../audio_component/OboeEngine.h"
-#include "../../oboe/jni/JNIObjectInfo.h"
+#include "../audio_component/AudioPlayer.h"
+#include "../../tools/JNICallbackHandler.h"
 #include <iostream>
 
 // ---- Audio Player to use Oboe ----
@@ -13,49 +13,57 @@ Java_com_bof_android_audio_1player_audio_1component_player_OboeAudioPlayer_prepa
         jint sample_rate,
         jint channel_cnt
 ) {
-/*    auto* player = new OboeAudioPlayer(sampleRate, channelCnt);
-    player->prepare();
-    return reinterpret_cast<jlong>(player);*/
-    auto* player = new OboeEngine();
-    player->startPlaybackAndRecording();
+    auto* player = new AudioPlayer();
+    player->prepare(sample_rate, channel_cnt);
+
     return reinterpret_cast<jlong>(player);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_bof_android_audio_1player_audio_1component_player_OboeAudioPlayer_startNative(
+        JNIEnv *env,
+        jobject thiz,
+        jlong playerId
+) {
+    auto* player = reinterpret_cast<AudioPlayer*>(playerId);
+    player->start();
 }
 
 
 extern "C" JNIEXPORT void JNICALL
-Java_com_bof_android_audio_1player_audio_1component_OboeAudioPlayer_consumeDataNative(
+Java_com_bof_android_audio_1player_audio_1component_player_OboeAudioPlayer_consumeDataNative(
         JNIEnv *env,
         jobject thiz,
         jlong playerId,
         jshortArray shortArray,
         jint chunkSize
 ) {
-/*    auto* player = reinterpret_cast<OboeAudioPlayer*>(playerId);
+    auto* player = reinterpret_cast<AudioPlayer*>(playerId);
 
     auto* dataArray = new short[chunkSize];
     env->GetShortArrayRegion(shortArray, 0, chunkSize, dataArray);
     // 전달.
     player->consumeData(dataArray, chunkSize);
     // 전달 역할을 다 했으니 해제.
-    delete[] dataArray;*/
+    delete[] dataArray;
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_com_bof_android_audio_1player_audio_1component_OboeAudioPlayer_finishNative(
+Java_com_bof_android_audio_1player_audio_1component_player_OboeAudioPlayer_finishNative(
         JNIEnv *env,
         jobject thiz,
         jlong playerId
 ) {
-/*    auto* player = reinterpret_cast<OboeAudioPlayer*>(playerId);
+    auto* player = reinterpret_cast<AudioPlayer*>(playerId);
     player->finish();
-    delete player;*/
+    delete player;
 }
 
 // ---- Audio Capture to use Oboe ----
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_bof_android_audio_1player_audio_1component_capture_OboeAudioCapture_prepareNative(
+Java_com_bof_android_audio_1player_audio_1component_capture_OboeAudioCapture_prepareNativeCapture(
         JNIEnv *env,
         jobject thiz,
         jint sample_rate,
@@ -64,28 +72,47 @@ Java_com_bof_android_audio_1player_audio_1component_capture_OboeAudioCapture_pre
     // 디오 캡처 생성.
     auto* audioCapture = new AudioCapture();
     audioCapture->prepare(sample_rate, channel_cnt);
+
     return reinterpret_cast<jlong>(audioCapture);
 }
 
 extern "C"
-JNIEXPORT void JNICALL
-Java_com_bof_android_audio_1player_audio_1component_capture_OboeAudioCapture_capturingNative(
+JNIEXPORT jlong JNICALL
+Java_com_bof_android_audio_1player_audio_1component_capture_OboeAudioCapture_prepareActionOnCapture(
         JNIEnv *env,
         jobject thiz,
         jlong obj_id,
         jobject on_capture
 ) {
     auto* audioCapture = reinterpret_cast<AudioCapture*>(obj_id);
-    auto* jniObjectInfo = new JNIObjectInfo(env, on_capture, "onCapture", "([SI)V");
+    auto* jniCallback = new JNICallbackHandler(env, on_capture);
 
-    // capture 시, 실행할 callback.
-    auto onCapture = [jniObjectInfo](short* audioData, int chunkSize) {
-        jniObjectInfo->callMethod(audioData, chunkSize);
-        // 메서드를 콜 했으니, 제거.
-        delete jniObjectInfo;
+    auto onCapture = [jniCallback](short* data, int size) {
+        auto targetEnv = jniCallback->getJNIEnv();
+        jshortArray javaArray = targetEnv->NewShortArray(size);
+
+        targetEnv->SetShortArrayRegion(javaArray, 0, size, data);
+        jniCallback->call(javaArray, size);
     };
-    // capture 진행.
-    audioCapture->capture(onCapture);
+
+    audioCapture->prepareActionOnCapture(onCapture);
+
+    return reinterpret_cast<jlong>(jniCallback);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_bof_android_audio_1player_audio_1component_capture_OboeAudioCapture_captureNative(
+        JNIEnv *env,
+        jobject thiz,
+        jlong obj_id,
+        jlong action_id
+) {
+    // get Audio Capture Object.
+    auto* audioCapture = reinterpret_cast<AudioCapture*>(obj_id);
+
+    // start 진행.
+    audioCapture->start();
 }
 
 extern "C"
@@ -93,12 +120,17 @@ JNIEXPORT void JNICALL
 Java_com_bof_android_audio_1player_audio_1component_capture_OboeAudioCapture_finishNative(
         JNIEnv *env,
         jobject thiz,
-        jlong obj_id
+        jlong obj_id,
+        jlong action_id
 ) {
     auto* audioCapture = reinterpret_cast<AudioCapture*>(obj_id);
     // 내부 할당 해제.
     audioCapture->finish();
-
     // 최종 할당 해제.
     delete audioCapture;
+
+    // Release the global reference for on_capture
+    auto actionOnCapture = reinterpret_cast<JNICallbackHandler*>(action_id);
+    // 내부 할당 해제.
+    delete actionOnCapture;
 }

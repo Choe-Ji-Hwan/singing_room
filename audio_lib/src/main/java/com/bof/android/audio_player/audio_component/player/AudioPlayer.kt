@@ -11,6 +11,10 @@ interface AudioPlayer {
      */
     fun prepare(sampleRate: Int, channelCnt: Int)
 
+    /**
+     * 시작.
+     */
+    fun start()
 
     /**
      * PCM 데이터를 받아서, 재생.

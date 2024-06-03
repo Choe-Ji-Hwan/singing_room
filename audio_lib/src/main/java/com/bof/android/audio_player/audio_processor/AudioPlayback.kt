@@ -1,5 +1,6 @@
 package com.bof.android.audio_player.audio_processor
 
+import android.util.Log
 import com.bof.android.audio_player.audio_component.capture.AudioCapture
 import com.bof.android.audio_player.audio_component.capture.OboeAudioCapture
 import com.bof.android.audio_player.audio_component.player.AudioPlayer
@@ -28,16 +29,14 @@ class AudioPlayback {
      * 플레이 백 준비.
      */
     fun prepare() {
-        // capture delegate.
-        val captureDelegate = object : AudioCapture.Delegate {
-            override fun onCapture(pcmData: ShortArray, chunkSize: Int) {
-                audioPlayer?.consumeData(pcmData, chunkSize)
-            }
+        val onCapture: (ShortArray, Int) -> Unit = { pcmData, chunkSize ->
+            Log.d("test2", "${pcmData[0]}")
+            audioPlayer?.consumeData(pcmData, chunkSize)
         }
 
-        // prepare audio capture.
+        // prepare audio start.
         audioCapture = OboeAudioCapture().also {
-            it.prepare(SAMPLE_RATE, CHANNEL_CNT, captureDelegate)
+            it.prepare(SAMPLE_RATE, CHANNEL_CNT, onCapture)
         }
         // prepare audio player.
         audioPlayer = OboeAudioPlayer().also {
@@ -51,6 +50,9 @@ class AudioPlayback {
     fun play() {
         if (audioCapture == null || audioPlayer == null) return
 
+        // 플레이어를 먼저 실행해 놓음.
+        audioPlayer?.start()
+        Log.d("test2", "start")
         // 레코딩 하면서, 동시에 녹음한 데이터 재생.
         audioCapture?.capture()
     }

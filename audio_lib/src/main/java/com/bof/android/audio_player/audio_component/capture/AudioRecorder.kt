@@ -27,9 +27,9 @@ class AudioRecorder: AudioCapture() {
      * * 권한은 외부에서 체크하므로, 여기서 린트를 사용하여 컴파일 에러를 막음. -> AudioRecord 생성 시 필수.
      */
     @SuppressLint("MissingPermission")
-    override fun prepare(sampleRate: Int, channelCnt: Int, delegate: Delegate) {
+    override fun prepare(sampleRate: Int, channelCnt: Int, onCapture: ((ShortArray, Int) -> Unit)?) {
         // super.
-        super.prepare(sampleRate, channelCnt, delegate)
+        super.prepare(sampleRate, channelCnt, onCapture)
 
         // 현재는, 모노/스테레오 만 지원한다.
         // AudioRecord를 위한 값.
@@ -55,7 +55,7 @@ class AudioRecorder: AudioCapture() {
         )
 
         // 초기화 상태로 변경.
-        recorderState = RecordState.INIT
+        recorderState = CaptureState.INIT
     }
 
     /**
@@ -63,16 +63,16 @@ class AudioRecorder: AudioCapture() {
      */
     override fun capture() {
         // 준비가 되지 않거나, state 상태가 준비된 상태가 아니라면, play 하지 않음.
-        if (coreRecorder == null || recorderState != RecordState.INIT) return
+        if (coreRecorder == null || recorderState != CaptureState.INIT) return
         coreRecorder?.startRecording()
-        recorderState = RecordState.RUNNING
+        recorderState = CaptureState.RUNNING
 
         thread(start = true) {
-            while(recorderState == RecordState.RUNNING) {
+            while(recorderState == CaptureState.RUNNING) {
                 val readData = ShortArray(chunkSize)
                 val ret = coreRecorder?.read(readData, 0, chunkSize)
 
-                delegate?.onCapture(readData, chunkSize)
+                actionOnCapture?.invoke(readData, chunkSize)
             }
         }
     }
@@ -81,7 +81,7 @@ class AudioRecorder: AudioCapture() {
      * 오디오 캡처 종료.
      */
     override fun finish() {
-        recorderState = RecordState.STOP
+        recorderState = CaptureState.STOP
         coreRecorder?.stop()
         coreRecorder?.release()
         coreRecorder = null

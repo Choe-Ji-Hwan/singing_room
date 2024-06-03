@@ -1,7 +1,5 @@
 #include "AudioCapture.h"
 
-#include <utility>
-
 /**
  * 캡처 준비.
  * @param sampleRate: 캡처할 샘플 레이트.
@@ -23,11 +21,7 @@ oboe::Result AudioCapture::prepare(int sampleRate, int channelCnt)  {
     captureBuilder.setUsage(oboe::Usage::Game);
     captureBuilder.setPerformanceMode(oboe::PerformanceMode::LowLatency);
     captureBuilder.setCallback(streamCallback);
-    auto result = captureBuilder.openStream(&captureStream);
-    if (result != oboe::Result::OK) return result;
-
-    // 캡처 스트림 시작.
-    return captureStream->start();
+    return captureBuilder.openStream(&captureStream);
 }
 
 /**
@@ -35,11 +29,7 @@ oboe::Result AudioCapture::prepare(int sampleRate, int channelCnt)  {
  * @param onCapture: 캡처가 되었다고 콜백이 실행되면 실행되는 콜백.
  * @return: 시작 여부.
  */
-oboe::Result AudioCapture::capture(function<void(short *, int)> onCapture) {
-    // 콜백 설정 :prepare 에서 하지 않고, 여기서 설정(jni를 통해서 java의 콜백을 실행시킬 수 있으므로)
-    if (streamCallback == nullptr) return oboe::Result::ErrorInternal;
-    streamCallback->setCaptureCallback(std::move(onCapture));
-
+oboe::Result AudioCapture::start() {
     // 캡처 스트림 시작.
     return captureStream->start();
 }
@@ -60,7 +50,7 @@ void AudioCapture::finish() {
 /**
  * oboe 내부에서 스트림에 값이 들어오면 실행되는 객체.
  * @param audioStream: 쓸 수 있는 스트림.
- * @param audioData: 실제 실행되는 곳. (여기다 쓰면 읽힘) <- capture 에서 사용 되지 않음.
+ * @param audioData: 실제 실행되는 곳. (여기다 쓰면 읽힘) <- start 에서 사용 되지 않음.
  * @param numFrames: 받아온 프레임 수.
  * @return 계속할 지 여부.
  */
@@ -75,12 +65,14 @@ oboe::DataCallbackResult AudioCapture::CaptureStreamCallback::onAudioReady(
 
     // 읽어온 pcm audio data, 콜백을 통해 전달.
     onCapture(resultData, numFrames);
+    delete[] resultData;
+    return oboe::DataCallbackResult::Continue;
 }
 
 /**
  * 캡처 되었을 때 실행되는 콜백.
- * @param callback
+ * @param action
  */
-void AudioCapture::CaptureStreamCallback::setCaptureCallback(function<void(short *, int)> callback) {
-    this->onCapture = std::move(callback);
+void AudioCapture::CaptureStreamCallback::setActionOnCapture(function<void(short *, int)> action) {
+    this->onCapture = std::move(action);
 }

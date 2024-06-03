@@ -45,7 +45,12 @@ class AudioTrackPlayer: AudioPlayer {
             )
             .setBufferSizeInBytes(bufSize)
             .build()
+    }
 
+    /**
+     * 시작
+     */
+    override fun start() {
         player?.play()
     }
 

@@ -19,26 +19,30 @@ class OboeAudioPlayer: AudioPlayer {
         playerId = prepareNative(sampleRate, channelCnt)
     }
 
-    override fun consumeData(pcmData: ShortArray, chunkSize: Int) {
-/*        if (playerId == null) return
+    override fun start() {
+        if (playerId == null) return
 
-        // byteArray to shortArray
-        val pcmShortArray = byteArray.toShortArray()
-        // apply re-size
-        val convertedSize = pcmShortArray.size
-        consumeDataNative(playerId!!, pcmShortArray, convertedSize)*/
+        startNative(playerId!!)
+    }
+
+    override fun consumeData(pcmData: ShortArray, chunkSize: Int) {
+        if (playerId == null) return
+
+        consumeDataNative(playerId!!, pcmData, chunkSize)
     }
 
     override fun finish() {
-/*        if (playerId == null) return
+        if (playerId == null) return
 
         finishNative(playerId!!)
-        playerId = null*/
+        playerId = null
     }
 
     private external fun prepareNative(sampleRate: Int, channelCnt: Int): Long
 
-    /*private external fun consumeDataNative(objId: Long, shortArray: ShortArray, chunkSize: Int)
+    private external fun startNative(objId: Long)
 
-    private external fun finishNative(objId:Long)*/
+    private external fun consumeDataNative(objId: Long, shortArray: ShortArray, chunkSize: Int)
+
+    private external fun finishNative(objId:Long)
 }
