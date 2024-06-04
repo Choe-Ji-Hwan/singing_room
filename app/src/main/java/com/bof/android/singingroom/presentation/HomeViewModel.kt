@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
+import com.bof.android.audio_player.audio_component.LawLatencyAudioPlayBack
 import com.bof.android.audio_player.audio_processor.AudioPlayback
 
 class HomeViewModel : ViewModel() {
@@ -36,14 +37,14 @@ class HomeViewModel : ViewModel() {
             return
         }
         // 권한이 체크 되면 플레이 백 준비.
-        audioPlayBack = AudioPlayback().also { it.prepare() }
+        audioPlayBack = LawLatencyAudioPlayBack()
     }
 
     /**
      * 플레이 백 실행.
      */
     fun playPlayBack() {
-        audioPlayBack?.play()
+        audioPlayBack?.start()
     }
 
     /**

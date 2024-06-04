@@ -1,7 +1,7 @@
 #include <jni.h>
 
 extern "C" JNIEXPORT jlong JNICALL
-Java_com_bof_android_audio_1player_audio_1component_LawLatencyAudioPlayer_prepareNative(
+Java_com_bof_android_audio_1player_audio_1component_LawLatencyAudioPlayBack_startNative(
         JNIEnv *env,
         jobject thiz,
         int sampleRate,
@@ -9,17 +9,8 @@ Java_com_bof_android_audio_1player_audio_1component_LawLatencyAudioPlayer_prepar
 );
 
 extern "C" JNIEXPORT void JNICALL
-Java_com_bof_android_audio_1player_audio_1component_LawLatencyAudioPlayer_consumeDataNative(
+Java_com_bof_android_audio_1player_audio_1component_LawLatencyAudioPlayBack_finishNative(
         JNIEnv *env,
         jobject thiz,
-        jlong playerId,
-        jshortArray shortArray,
-        jint chunkSize
-);
-
-extern "C" JNIEXPORT void JNICALL
-Java_com_bof_android_audio_1player_audio_1component_LawLatencyAudioPlayer_finishNative(
-        JNIEnv *env,
-        jobject thiz,
-        jlong playerId
+        jlong playbackId
 );
