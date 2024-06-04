@@ -29,7 +29,6 @@ void AudioPlayer::consumeData(short *shortArray, int size) {
     for (int i = 0; i < size; ++i) {
         queue->enqueue(shortArray[i]);
     }
-    __android_log_print(ANDROID_LOG_DEBUG, "test2", "enque: %d", shortArray[0]);
 }
 
 void AudioPlayer::finish() {
@@ -49,7 +48,9 @@ AudioPlayer::PlayerStreamCallback::onAudioReady(oboe::AudioStream *audioStream, 
     auto *data = static_cast<short *>(audioData);
 
     for(int i = 0; i < numFrames; ++i) {
-        *data++ = this->targetQueue.dequeue();
+        auto shortData = this->targetQueue.dequeue();
+        *data++ = shortData;
+        __android_log_print(ANDROID_LOG_DEBUG, "test2", "consume: %d", shortData);
     }
 
     return oboe::DataCallbackResult::Continue;
