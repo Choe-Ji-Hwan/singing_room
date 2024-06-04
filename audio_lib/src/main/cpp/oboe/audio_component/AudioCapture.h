@@ -15,17 +15,7 @@ public:
      * @param channelCnt: 캡처할 채널 개수.
      * @return: 캡처 준비 여부.
      */
-    oboe::Result prepare(int sampleRate, int channelCnt);
-
-    /**
-     * 캡처 시 콜백 재생.
-     * @param onCapture
-     */
-    void prepareActionOnCapture(function<void(short*, int)> onCapture) {
-        captureCallback = onCapture;
-
-        streamCallback->setActionOnCapture(captureCallback);
-    }
+    oboe::Result prepare(int sampleRate, int channelCnt, function<void(short*, int)> onCapture);
 
     /**
      * 캡처 과정.

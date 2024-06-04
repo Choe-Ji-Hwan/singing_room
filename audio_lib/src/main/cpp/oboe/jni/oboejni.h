@@ -37,15 +37,7 @@ Java_com_bof_android_audio_1player_audio_1component_capture_OboeAudioCapture_pre
         JNIEnv *env,
         jobject thiz,
         jint sample_rate,
-        jint channel_cnt
-);
-
-extern "C"
-JNIEXPORT jlong JNICALL
-Java_com_bof_android_audio_1player_audio_1component_capture_OboeAudioCapture_prepareActionOnCapture(
-        JNIEnv *env,
-        jobject thiz,
-        jlong obj_id,
+        jint channel_cnt,
         jobject action_object
 );
 
@@ -54,8 +46,7 @@ JNIEXPORT void JNICALL
 Java_com_bof_android_audio_1player_audio_1component_capture_OboeAudioCapture_captureNative(
         JNIEnv *env,
         jobject thiz,
-        jlong obj_id,
-        jlong action_id
+        jlong obj_id
 );
 
 extern "C"
@@ -63,6 +54,5 @@ JNIEXPORT void JNICALL
 Java_com_bof_android_audio_1player_audio_1component_capture_OboeAudioCapture_finishNative(
         JNIEnv *env,
         jobject thiz,
-        jlong obj_id,
-        jlong action_id
+        jlong obj_id
 );

@@ -20,18 +20,13 @@ class OboeAudioCapture : AudioCapture() {
     // 제대로 된 ID를 받지 않으면, -1을 가짐.
     private var captureId: Long = INVALID_ID
 
-    // native onCapture Callback object id.
-    // 제대로 된 ID를 받지 않으면, -1을 가짐.
-    private var actionOnCaptureId: Long = INVALID_ID
-
     /**
      * 오디오 캡처 사용 전, 초기화 과정.
      * * caution: 캡처 사용을 위해 초기화 과정이 항상 필요함.x
      */
     override fun prepare(sampleRate: Int, channelCnt: Int, onCapture: ((ShortArray, Int) -> Unit)?) {
         super.prepare(sampleRate, channelCnt, onCapture)
-        captureId = prepareNativeCapture(this.sampleRate, this.channelCount)
-        actionOnCaptureId = prepareActionOnCapture(captureId, actionOnCapture)
+        captureId = prepareNativeCapture(this.sampleRate, this.channelCount, this.actionOnCapture)
     }
 
     /**
@@ -40,7 +35,7 @@ class OboeAudioCapture : AudioCapture() {
     override fun capture() {
         if (captureId == INVALID_ID) return
 
-        captureNative(captureId, actionOnCaptureId)
+        captureNative(captureId)
     }
 
     /**
@@ -49,19 +44,15 @@ class OboeAudioCapture : AudioCapture() {
     override fun finish() {
         if (captureId == INVALID_ID) return
 
-        // todo action id가 필요한가..?
-        finishNative(captureId, actionOnCaptureId)
+        finishNative(captureId)
 
         // id 해제.
         captureId = INVALID_ID
-        actionOnCaptureId = INVALID_ID
     }
 
-    private external fun prepareNativeCapture(sampleRate: Int, channelCnt: Int): Long
+    private external fun prepareNativeCapture(sampleRate: Int, channelCnt: Int, onCapture: ((ShortArray, Int) -> Unit)?): Long
 
-    private external fun prepareActionOnCapture(objId: Long, onCapture: ((ShortArray, Int) -> Unit)?): Long
+    private external fun captureNative(objId: Long)
 
-    private external fun captureNative(objId: Long, actionOnCaptureId: Long)
-
-    private external fun finishNative(objId: Long, onCaptureCallbackObjId: Long)
+    private external fun finishNative(objId: Long)
 }

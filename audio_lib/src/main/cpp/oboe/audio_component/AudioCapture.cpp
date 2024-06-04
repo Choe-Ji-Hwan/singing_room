@@ -1,14 +1,19 @@
 #include "AudioCapture.h"
 
+#include <utility>
+
 /**
  * 캡처 준비.
  * @param sampleRate: 캡처할 샘플 레이트.
  * @param channelCnt: 캡처할 채널 개수.
  * @return: 캡처 준비 여부.
  */
-oboe::Result AudioCapture::prepare(int sampleRate, int channelCnt)  {
+oboe::Result AudioCapture::prepare(int sampleRate, int channelCnt, function<void(short*, int)> onCapture)  {
     // 콜백 생성.
     this->streamCallback = new CaptureStreamCallback();
+
+    // 콜백에 action 콜백 전달.
+    streamCallback->setActionOnCapture(std::move(onCapture));
 
     // 레코딩 스트림 열기
     oboe::AudioStreamBuilder captureBuilder;
@@ -66,6 +71,7 @@ oboe::DataCallbackResult AudioCapture::CaptureStreamCallback::onAudioReady(
     // 읽어온 pcm audio data, 콜백을 통해 전달.
     onCapture(resultData, numFrames);
     delete[] resultData;
+
     return oboe::DataCallbackResult::Continue;
 }
 
