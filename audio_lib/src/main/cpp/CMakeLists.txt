@@ -27,6 +27,8 @@ project("main")
 # used in the AndroidManifest.xml file.
 add_library(${CMAKE_PROJECT_NAME} SHARED
     # List C/C++ source files with relative paths to this CMakeLists.txt.
+        audio_element/AudioDataProcessor.cpp
+        effect/EffectEcho.cpp
         oboe/jni/oboejni.cpp
         oboe/audio_processor/OboeAudioPlayer.cpp
         oboe/audio_processor/OboePlayback.cpp

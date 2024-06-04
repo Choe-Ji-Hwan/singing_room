@@ -8,6 +8,8 @@
 OboePlayback::OboePlayback(int sampleRate, int channelCnt) {
     this->sampleRate = sampleRate;
     this->channelCnt = channelCnt;
+
+    this->audioDataProcessor = new AudioDataProcessor(sampleRate, channelCnt);
 }
 
 /**
@@ -22,6 +24,8 @@ OboePlayback::~OboePlayback() {
     mPlaybackStream->close();
     mPlaybackStream->release();
     mPlaybackStream = nullptr;
+
+    delete audioDataProcessor;
 }
 
 /**
@@ -85,8 +89,16 @@ OboePlayback::onAudioReady(oboe::AudioStream *audioStream, void *audioData, int3
     // 이제 resultData에서 읽어왔으니, 여기서 데이터 변환.
     // -----------------------------------------
     // resultData 를 가지고 작업하면 됨.
-    //
+    if (audioDataProcessor != nullptr) {
+        auto processResult = audioDataProcessor->process(resultData, numFrames);
+        short* processingData = processResult.first;
+        int processingDataSize = processResult.second;
+
+        resultData = processingData;
+    }
+
     // -----------------------------------------
+    // clamping.
     for(int i = 0; i < numFrames; ++i) {
         resultData[i] *= 4; // 음량 4배.
         // 만약 오버플로우 발생 시 최대값으로 설정
@@ -96,6 +108,9 @@ OboePlayback::onAudioReady(oboe::AudioStream *audioStream, void *audioData, int3
             resultData[i] = std::numeric_limits<int16_t>::min();
         }
     }
+
+    // -----------------------------------------
+    // data out.
     for (int i = 0; i < numFrames; ++i) {
         outputData[i] = resultData[i];
     }

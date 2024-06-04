@@ -1,6 +1,7 @@
 #include <oboe/Oboe.h>
 #include <android/log.h>
 #include "../../tools/SynchronizedQueue.h"
+#include "../../audio_element/AudioDataProcessor.h"
 
 class OboePlayback : public oboe::AudioStreamCallback {
 public:
@@ -46,4 +47,6 @@ private:
     // streams. (recoding, playback)
     std::shared_ptr<oboe::AudioStream> mPlaybackStream;
     std::shared_ptr<oboe::AudioStream> mRecordingStream; // 레코딩된 오디오를 가져오는 입력 스트림
+
+    AudioDataProcessor* audioDataProcessor = nullptr;
 };
