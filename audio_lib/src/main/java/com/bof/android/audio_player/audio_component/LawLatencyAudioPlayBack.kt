@@ -10,7 +10,7 @@ import com.bof.android.audio_player.audio_processor.AudioPlayback
  *      (jni를 통한 콜백에서 지연이 발생함) <- oboe 라이브러리는, 콜백을 이용할 수 밖에 없는 구조라 이와 같이 한 덩어리로 구성.
  *      따라서, 오디오 데이터 변환이 존재한다면, AudioPlayBack에 오디오 데이터 프로세서를 작동시키는 것이 맞다고 생각.
  */
-class LawLatencyAudioPlayBack: AudioPlayback {
+class LawLatencyAudioPlayBack: AudioPlayback() {
     companion object {
         // 연결 라이브러리 이름.
         init {
@@ -25,7 +25,10 @@ class LawLatencyAudioPlayBack: AudioPlayback {
      * playback 시작.
      */
     override fun start() {
-        playbackId = startNative(AudioPlayback.SAMPLE_RATE, AudioPlayback.CHANNEL_CNT)
+        if(state == State.PLAY) return
+        println(state)
+        playbackId = startNative(SAMPLE_RATE, CHANNEL_CNT)
+        state = State.PLAY
     }
 
     /**
@@ -36,6 +39,7 @@ class LawLatencyAudioPlayBack: AudioPlayback {
 
         finishNative(playbackId!!)
         playbackId = null
+        state = State.TERMINATED
     }
 
     // ---------------------------------------------------------------------------

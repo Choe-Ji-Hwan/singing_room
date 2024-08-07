@@ -1,7 +1,5 @@
 package com.bof.android.singingroom.presentation
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,7 +32,8 @@ fun HomeScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel = HomeVie
     ) {
         // 시작 버튼
         Button(onClick = {
-            viewModel.preparePlayBack(context)
+            viewModel.checkAudioPermission(context)
+            viewModel.preparePlayBack()
             viewModel.playPlayBack()
         }) {
             Text("Play")

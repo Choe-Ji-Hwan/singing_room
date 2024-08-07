@@ -7,7 +7,9 @@ import android.media.AudioRecord
  * - 노래방 시스템을 구현하기 위한 테스트 시스템.
  * - 안드로이드 29 이상부터 사용 가능.
  */
-interface AudioPlayback {
+abstract class AudioPlayback {
+
+    enum class State { TERMINATED, INIT, PLAY, STOP }
 
     companion object {
         // 녹음하고 재생할 고정 Sample Rate, 48000Hz
@@ -17,14 +19,16 @@ interface AudioPlayback {
         // 마이크 사용
         const val AUDIO_TYPE = AudioRecord.MIC_DIRECTION_TOWARDS_USER
     }
+    // 플레이 백 상태
+    var state: State = State.TERMINATED
 
     /**
      * 플레이 백 실행.
      */
-    fun start()
+    abstract fun start()
 
     /**
      * 플레이 백 종료.
      */
-    fun finish()
+    abstract fun finish()
 }

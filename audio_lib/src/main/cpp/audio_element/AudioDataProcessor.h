@@ -14,7 +14,7 @@ public:
         this->sampleRate = sampleRate;
         this->channelCnt = channelCnt;
 
-        echoEffect = new EffectEcho(sampleRate, 100, 0.5f);
+        echoEffect = new EffectEcho(sampleRate, 200, 0.3f);
     }
 
     ~AudioDataProcessor() {

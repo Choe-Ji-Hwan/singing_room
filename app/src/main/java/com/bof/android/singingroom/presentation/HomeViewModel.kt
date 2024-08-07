@@ -21,7 +21,7 @@ class HomeViewModel : ViewModel() {
      * 플레이 백 준비.
      * - 안드로이드 29 이상.
      */
-    fun preparePlayBack(context: Context) {
+    fun checkAudioPermission(context: Context) {
         // 권한 체크.
         if (ActivityCompat.checkSelfPermission(
                 context,
@@ -36,8 +36,14 @@ class HomeViewModel : ViewModel() {
             )
             return
         }
-        // 권한이 체크 되면 플레이 백 준비.
-        audioPlayBack = LawLatencyAudioPlayBack()
+    }
+    /**
+     * 플레이 백 준비.
+     */
+    fun preparePlayBack() {
+        if (audioPlayBack == null) {
+            audioPlayBack = LawLatencyAudioPlayBack()
+        }
     }
 
     /**
@@ -52,5 +58,6 @@ class HomeViewModel : ViewModel() {
      */
     fun finishPlayBack() {
         audioPlayBack?.finish()
+        audioPlayBack = null
     }
 }
